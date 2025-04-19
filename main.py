@@ -284,3 +284,20 @@ class ProjectManager:
         time.sleep(1)
         subprocess.call("TASKKILL /F /IM systemSettings.exe")
 
+    # Function for reading project manager environment json file
+    def read_env(self):
+        env_file = "\\".join(os.path.dirname(os.path.realpath(__file__)), "env\\project_manager_tools.json")
+        env = self.load_json()
+        self.read_houdini_tools(env)
+
+    # Function for enabling all Houdini tools
+    def read_houdini_tools(self, env_file):
+        pass
+
+    # Function for enabling all Nuke tools
+    def read_nuke_tools(self, env_file):
+        pass
+
+    # Function for enabling all Maya tools
+    def read_maya_tools(self, env_file):
+        pass
