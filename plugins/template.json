@@ -1,0 +1,10 @@
+{
+  "name": "SoftwareName",
+  "priority": 1000,
+  "package": "PathToPackageIfExists",
+  "pref_source": "PathToQueryPrefsFrom",
+  "tool_source": "PathToQueryToolsFrom",
+  "destination": "PathToSoftwareUserPrefDir",
+  "script": ["ListOfScripts(OrASingleScriptAsAString)ToRunIfRunIsTrue"],
+  "run": false
+}

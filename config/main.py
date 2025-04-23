@@ -4,7 +4,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from PySide6.QtUiTools import *
 import os, sys, shutil, subprocess, time
-import qt_utils
+import qt_utils, patterns, utils
 
 # Create Env file with all relevant file paths/variables!
 # New idea, using relative path to a plugin directory to get json config files (think setting up lazynvim)
@@ -87,30 +87,14 @@ class ProjectManager:
                                 files.append(f)
                 case False:
                     keep = True
-                    for ext in self.ignore_pattern:
+                    for ext in patterns.backup_ignore_list():
 
-                        if dir.endswith(ext) == True:
+                        if dir.endswith(ext):
                             keep = False
 
-                    if keep == True:
+                    if keep:
                         files.append(path)
         return files
-
-    def load_tik(self):
-
-        user_dir = "C:\\users\\{0}".format(self.user)
-        data = self.load_json(self.json + "\\tik_directories.json")
-
-        dst = user_dir + "\\TikManager4"
-        target = user_dir + "\\TM4_default"
-
-        if os.path.exists(user_dir + "\\TikManager4") == False:
-            shutil.copytree(data["TikManager4"], dst)
-
-        if os.path.exists(target):
-            shutil.rmtree(target)
-
-        subprocess.call(data["exe"])
 
     # Backup Script for Project, Only backs up scene files due to dfs target files script
     # ADD QT PROGRESS BAR
@@ -172,12 +156,12 @@ class ProjectManager:
     def load_tik(self):
 
         user_dir = "C:\\users\\{0}".format(self.user)
-        data = self.load_json(self.json + "\\tik_directories.json")
+        data = utils.load_json(self.json + "\\tik_directories.json")
 
         dst = user_dir + "\\TikManager4"
         target = user_dir + "\\TM4_default"
 
-        if os.path.exists(user_dir + "\\TikManager4") == False:
+        if not os.path.exists(user_dir + "\\TikManager4"):
             shutil.copytree(data["TikManager4"], dst)
 
         if os.path.exists(target):
