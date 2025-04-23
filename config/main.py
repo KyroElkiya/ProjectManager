@@ -3,10 +3,11 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from PySide6.QtUiTools import *
-import os, sys, json, shutil, subprocess, time
-from pprint import pprint
+import os, sys, shutil, subprocess, time
+import qt_utils
 
 # Create Env file with all relevant file paths/variables!
+# New idea, using relative path to a plugin directory to get json config files (think setting up lazynvim)
 
 
 # Defining class
@@ -15,115 +16,12 @@ class ProjectManager:
     # Initialise Environment
     def __init__(self, config):
         self.app = QApplication(sys.argv)
-
-    # PyQT Style Sheet for UI: PR it's basically CSS
-    @staticmethod
-    def style_sheet():
-        return ('''
-            QWidget {
-                font-size: 15px;
-                background-color: #222222;
-            }
-            QPushButton {
-                height: 20px;
-                color: black;
-                background-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 1,
-                               stop: 1 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 0 #ffff11
-                );
-                border-width: 2px;
-                border-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 0,
-                               stop: 0 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 1 #ffff11
-                );
-                border-style: inset;
-                padding: 2px;
-            }
-            QPushButton:Pressed {
-                background-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 1,
-                               stop: 1 #342a25,
-                               stop: 0.5 #632eff,
-                               stop: 0 #11ffff
-                );
-            }
-            QPushButton:hover {
-                border-color: #22cccc;
-            }
-            QLineEdit {
-                height: 20px;
-                background-color: #eeeeee;
-                border-width: 2px;
-                border-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 0,
-                               stop: 0 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 1 #ffff11
-                );
-                border-style: inset;
-                padding: 2px;
-            }
-            QTabWidget {
-                color: black;
-                background-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 1,
-                               stop: 1 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 0 #ffff11
-                );
-                border-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 0,
-                               stop: 0 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 1 #ffff11
-                );
-            }
-            QTabBar:Tab:selected {
-                color: black;
-                background-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 1,
-                               stop: 1 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 0 #ffff11
-                );
-                border-color: QLinearGradient(
-                               x1: 0,
-                               x2: 1,
-                               y1: 0,
-                               y2: 0,
-                               stop: 0 #252a34,
-                               stop: 0.5 #ff2e63,
-                               stop: 1 #ffff11
-                );
-            }
-            ''')
+        self.root = "\\".join((__file__.split("\\")[:-2]))
+        self.dependencies = "\\".join([self.root, "config", "dependencies"])
+        self.ui = "\\".join([self.dependencies, "ui"])
 
     # Loading UI QtDesigner file and connecting up all the buttons
+    # TO DO: Convert to using main_window.py <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     def load_ui(self, file_name):
         loader = QUiLoader()
         file = QFile(self.ui + "\\" + file_name)
@@ -142,6 +40,7 @@ class ProjectManager:
         window.backup_project.clicked.connect(self.run_backup_project)
 
         self.window = window
+        return self.window
 
     # Function to run application
     def run(self):
@@ -150,17 +49,10 @@ class ProjectManager:
         window = self.load_ui("ProjectManager_Main_new.ui")
         app = self.app
         window = self.window
-        app.setStyleSheet(self.style_sheet())
+        app.setStyleSheet(qt_utils.style_sheet())
         window.show()
         app.exec()
 
-    # Function to read Json files
-    def load_json(self, config):
-        with open(config) as json_data:
-            data = json.load(json_data)
-            json_data.close()
-
-        return data
 
     # Depth first search algorithm for finding all sub files in a given directory
     # Takes a .Json file with a list of file extensions to bypass
@@ -204,7 +96,6 @@ class ProjectManager:
                         files.append(path)
         return files
 
-    # Custom implementation for loading TIK Manager on Uni PCs due to PCs self wipe on logout
     def load_tik(self):
 
         user_dir = "C:\\users\\{0}".format(self.user)
@@ -277,18 +168,29 @@ class ProjectManager:
 
             print("finished in {0:.2f} seconds".format(end - start))
 
+    # Custom implementation for loading TIK Manager on Uni PCs due to PCs self wipe on logout
+    def load_tik(self):
+
+        user_dir = "C:\\users\\{0}".format(self.user)
+        data = self.load_json(self.json + "\\tik_directories.json")
+
+        dst = user_dir + "\\TikManager4"
+        target = user_dir + "\\TM4_default"
+
+        if os.path.exists(user_dir + "\\TikManager4") == False:
+            shutil.copytree(data["TikManager4"], dst)
+
+        if os.path.exists(target):
+            shutil.rmtree(target)
+
+        subprocess.call(data["exe"])
+
     # Runs Windows PC theme file
     @staticmethod
     def pc_theme(path):
         os.startfile(path)
         time.sleep(1)
         subprocess.call("TASKKILL /F /IM systemSettings.exe")
-
-    # Function for reading project manager environment json file
-    def read_env(self):
-        env_file = "\\".join(os.path.dirname(os.path.realpath(__file__)), "env\\project_manager_tools.json")
-        env = self.load_json()
-        self.read_houdini_tools(env)
 
     # Function for enabling all Houdini tools
     def read_houdini_tools(self, env_file):
