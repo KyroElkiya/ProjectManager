@@ -56,3 +56,27 @@ class PluginManager:
 
         return plugins, lazy_plugins
 
+
+    def exec_plugins(self, plugins):
+
+        for plugin in plugins:
+            plugin_data = utils.load_json(plugin)
+
+            try:
+                run = plugin_data["run"]
+            except:
+                run = False
+
+            # TO DO: set a checking system to make sure scripts is a list of strings <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+            try:
+                scripts = plugin_data["script"]
+            except:
+                scripts = None
+
+            if run and scripts:
+                for s in scripts:
+                    subprocess.call(s, shell=False)
+
+            
+

@@ -5,6 +5,6 @@
   "pref_source": "PathToQueryPrefsFrom",
   "tool_source": "PathToQueryToolsFrom",
   "destination": "PathToSoftwareUserPrefDir",
-  "script": ["ListOfScripts(OrASingleScriptAsAString)ToRunIfRunIsTrue"],
+  "script": ["ListOfScriptsToRunIfRunIsTrue"],
   "run": false
 }
