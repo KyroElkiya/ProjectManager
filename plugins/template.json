@@ -1,10 +1,12 @@
 {
   "name": "SoftwareName",
   "priority": 1000,
-  "package": "PathToPackageIfExists",
-  "pref_source": "PathToQueryPrefsFrom",
-  "tool_source": "PathToQueryToolsFrom",
-  "destination": "PathToSoftwareUserPrefDir",
-  "script": ["ListOfScriptsToRunIfRunIsTrue"],
+  "package": "/Path/To/Package/If/Exists",
+  "pref_source": "/Path/To/Query/Prefs/From",
+  "tool_source": "/Path/To/Query/Tools/From",
+  "pref_destination": "/Path/To/Software/User/Pref/Dir",
+  "tool_destination": "/Path/to/Tool/Destination(MayBeSameAsAbove)",
+  "package_destination": "/Path/To/Package/Destination",
+  "script": ["/List/Of/Scripts/Paths/To/Run/If/Run/Is/True"],
   "run": false
 }

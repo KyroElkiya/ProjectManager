@@ -8,10 +8,18 @@ class PluginManager:
 
     def __init__(self):
         self.root = "\\".join((__file__.split("\\")[:-2]))
-        self.plugin_dir = "\\".join(self.root, "plugins")
+        self.plugin_dir = "\\".join([self.root, "plugins"])
+
+        # TO DO: Decouple this self.supported variable from hard coded <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+        self.supported = ["houdini", "maya", "nuke", "mari", "zbrush"]
 
     # Function for getting 2 sorted lists, 1 for Plugins and the other for Lazy Load Plugins
     # TO DO: implement a proper way to figure out if something has been loaded after being called as lazy <<<<<<<<<<<<<<
+    # TO DO: implement method of writing to/creating new plugin Json files through project manager <<<<<<<<<<<<<<<<<<<<<
+
+    # Get plugins auto sorts priority, so don't need to implement priority sorting into exec function
+
     def get_plugins(self):
 
         plugin_priority = {}
@@ -22,8 +30,8 @@ class PluginManager:
         # Looping through plugins directory
 
         for plugin in os.listdir(self.plugin_dir):
-            if plugin == "template.json":
-                continue
+            # if plugin == "template.json":
+            #     continue
 
             plugin_path = "\\".join([self.plugin_dir, plugin])
             plugin_data = utils.load_json(plugin_path)
@@ -62,21 +70,44 @@ class PluginManager:
         for plugin in plugins:
             plugin_data = utils.load_json(plugin)
 
-            try:
-                run = plugin_data["run"]
-            except:
-                run = False
+            # TO DO: Separate this sets list from Python script rather than hard coding <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+            set = ["name", "package", "pref_source", "tool_source", "destination",
+                   "package_destination", "script", "run"]
+
+            fixed_plugin_data = {}
+            for item in set:
+                try:
+                    fixed_plugin_data[item] = plugin_data[item]
+                except:
+                    fixed_plugin_data[item] = None
 
             # TO DO: set a checking system to make sure scripts is a list of strings <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-            try:
-                scripts = plugin_data["script"]
-            except:
-                scripts = None
+            if fixed_plugin_data["run"] and isinstance(fixed_plugin_data["scripts"], list):
 
-            if run and scripts:
-                for s in scripts:
-                    subprocess.call(s, shell=False)
+                for s in fixed_plugin_data["scripts"]:
+                    if isinstance(s, str):
+                        subprocess.call(s, shell=False)
 
-            
+            # checks if a valid package and package destination exists, and attempts to copy if both are found.
 
+            if isinstance(fixed_plugin_data["package_destination"], str) \
+                and os.path.isdir(fixed_plugin_data["package_destination"]):
+
+                if isinstance(fixed_plugin_data["package"], str) and os.path.isfile(fixed_plugin_data["package"]):
+                    try:
+                        shutil.copy(fixed_plugin_data["package"], fixed_plugin_data["package_destination"])
+                    except:
+                        print("Failed: Check if package: {0} : already exists at target location."
+                              .format(fixed_plugin_data["package"]))
+
+            if isinstance(fixed_plugin_data["destination"], str) and os.path.isdir(fixed_plugin_data["destination"]):
+                try:
+                    pass
+                except:
+                    pass
+
+x = PluginManager()
+plugins = x.get_plugins()[0]
+x.exec_plugins(plugins)
