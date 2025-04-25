@@ -30,8 +30,8 @@ class PluginManager:
         # Looping through plugins directory
 
         for plugin in os.listdir(self.plugin_dir):
-            # if plugin == "template.json":
-            #     continue
+            if plugin == "template.json":
+                continue
 
             plugin_path = "\\".join([self.plugin_dir, plugin])
             plugin_data = utils.load_json(plugin_path)
@@ -59,15 +59,15 @@ class PluginManager:
 
         # Sorting order of plugins based on the priority in the dictionaries above using Lambda
 
-        plugins = sorted(plugins, key=lambda target: plugin_priority[target], reverse=True)
+        active_plugins = sorted(plugins, key=lambda target: plugin_priority[target], reverse=True)
         lazy_plugins = sorted(lazy_plugins, key=lambda target: lazy_priority[target], reverse=True)
 
-        return plugins, lazy_plugins
+        return active_plugins, lazy_plugins
 
+    @staticmethod
+    def exec_plugins(plugins_list):
 
-    def exec_plugins(self, plugins):
-
-        for plugin in plugins:
+        for plugin in plugins_list:
             plugin_data = utils.load_json(plugin)
 
             # TO DO: Separate this sets list from Python script rather than hard coding <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -121,6 +121,3 @@ class PluginManager:
                                         fixed_plugin_data["overwrite"])
 
 
-x = PluginManager()
-plugins = x.get_plugins()[0]
-x.exec_plugins(plugins)

@@ -4,7 +4,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 from PySide6.QtUiTools import *
 import os, sys, shutil, subprocess, time
-import qt_utils, patterns, utils
+import qt_utils, patterns, utils, plugin_manager
 
 # Create Env file with all relevant file paths/variables!
 # New idea, using relative path to a plugin directory to get json config files (think setting up lazynvim)
@@ -14,7 +14,7 @@ import qt_utils, patterns, utils
 class ProjectManager:
 
     # Initialise Environment
-    def __init__(self, config):
+    def __init__(self):
         self.app = QApplication(sys.argv)
         self.root = "\\".join((__file__.split("\\")[:-2]))
         self.dependencies = "\\".join([self.root, "config", "dependencies"])
@@ -52,7 +52,6 @@ class ProjectManager:
         app.setStyleSheet(qt_utils.style_sheet())
         window.show()
         app.exec()
-
 
     # Depth first search algorithm for finding all sub files in a given directory
     # Takes a .Json file with a list of file extensions to bypass
@@ -176,14 +175,12 @@ class ProjectManager:
         time.sleep(1)
         subprocess.call("TASKKILL /F /IM systemSettings.exe")
 
-    # Function for enabling all Houdini tools
-    def read_houdini_tools(self, env_file):
-        pass
+    @staticmethod
+    def load_plugins():
+        pm = plugin_manager.PluginManager()
+        plugins = pm.get_plugins()[0]
+        print(plugins)
+        pm.exec_plugins(plugins)
 
-    # Function for enabling all Nuke tools
-    def read_nuke_tools(self, env_file):
-        pass
 
-    # Function for enabling all Maya tools
-    def read_maya_tools(self, env_file):
-        pass
+# ProjectManager().load_plugins()
