@@ -72,8 +72,8 @@ class PluginManager:
 
             # TO DO: Separate this sets list from Python script rather than hard coding <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-            set = ["name", "package", "pref_source", "tool_source", "destination",
-                   "package_destination", "script", "run"]
+            set = ["name", "package", "pref_source", "pref_destination", "tool_source", "tool_destination",
+                   "package_destination", "script", "run", "overwrite"]
 
             fixed_plugin_data = {}
             for item in set:
@@ -102,11 +102,24 @@ class PluginManager:
                         print("Failed: Check if package: {0} : already exists at target location."
                               .format(fixed_plugin_data["package"]))
 
-            if isinstance(fixed_plugin_data["destination"], str) and os.path.isdir(fixed_plugin_data["destination"]):
-                try:
-                    pass
-                except:
-                    pass
+            # Checks if Tool source and destination exist, and if so runs copy full dir function.
+
+            if isinstance(fixed_plugin_data["tool_destination"], str) \
+                    and os.path.isdir(fixed_plugin_data["tool_destination"]):
+                if isinstance(fixed_plugin_data["tool_source"], str) and \
+                        os.path.isdir(fixed_plugin_data["tool_source"]):
+                    utils.copy_full_dir(fixed_plugin_data["tool_source"], fixed_plugin_data["tool_destination"],
+                                        fixed_plugin_data["overwrite"])
+
+            # Checks if Pref source and destination exist, and if so runs copy full dir function.
+
+            if isinstance(fixed_plugin_data["pref_destination"], str) \
+                    and os.path.isdir(fixed_plugin_data["pref_destination"]):
+                if isinstance(fixed_plugin_data["pref_source"], str) and \
+                        os.path.isdir(fixed_plugin_data["pref_source"]):
+                    utils.copy_full_dir(fixed_plugin_data["pref_source"], fixed_plugin_data["pref_destination"],
+                                        fixed_plugin_data["overwrite"])
+
 
 x = PluginManager()
 plugins = x.get_plugins()[0]
