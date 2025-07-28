@@ -1,4 +1,7 @@
 {
     "houdini_package_dir": "/path/to/houdini/package/dir",
-    "package": "/path/to/package"
+    "package": "/path/to/package",
+    "houdini_preferences_dir": "/path/to/houdini/houdini_preferences_dir",
+    "custom_preferences_dir": "path/to/preferences/dir",
 }
+
