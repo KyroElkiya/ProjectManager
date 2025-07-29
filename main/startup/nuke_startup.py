@@ -1,7 +1,7 @@
-from utils import helpers
+from utils import startup_utils
 
-def main():
+def main(root: str):
 
-    pass
+    data = startup_utils.load_config_users_json(root, "nuke")
 
 

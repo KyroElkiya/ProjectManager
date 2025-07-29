@@ -1,13 +1,11 @@
-from utils import helpers, file_utils
+from utils import file_utils, startup_utils
 import shutil
 
 def main(root: str):
     
     # Load data from houdini.json
-    # Need to automate getting current user, rather than using default constantly <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-    houdini_json = f"{root}/config/default/houdini.json"
-    data = helpers.load_json(houdini_json)
+    data = startup_utils.load_config_users_json(root, "houdini")
 
     # Copy package file to houdini package directory
     

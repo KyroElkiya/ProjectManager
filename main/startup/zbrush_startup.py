@@ -1,7 +1,6 @@
-from utils import helpers
-
-def main():
-
-    pass
+from utils import startup_utils
 
 
+def main(root: str):
+
+    data = startup_utils.load_config_users_json(root, "zbrush")

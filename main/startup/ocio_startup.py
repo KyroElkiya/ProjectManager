@@ -1,8 +1,8 @@
 import subprocess
-from utils import helpers
-def main(root):
+from utils import startup_utils
 
-    ocio_json = f"{root}/config/default/ocio.json"
-    
-    data = helpers.load_json(ocio_json)
+
+def main(root: str):
+
+    data = startup_utils.load_config_users_json(root, "ocio")
 
