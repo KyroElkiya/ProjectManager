@@ -1,6 +1,8 @@
 import os
 import shutil
 
+# Lists all files (no directories) in the given directory.
+
 def list_subfiles(directory: str):
     
     subfiles = []
@@ -13,6 +15,7 @@ def list_subfiles(directory: str):
     
     return subfiles
 
+# Takes a file and copies it into target directory, replacing any existing file with the same name.
 
 def copy_and_replace(old_file: str, target_directory: str):
 
@@ -23,8 +26,11 @@ def copy_and_replace(old_file: str, target_directory: str):
         os.remove(new_file_path)
     shutil.copy(old_file, target_directory)
 
+# For each loop wrapper for copy and replace function.
 
 def multi_copy_and_replace(old_files: list[str], target_directory: str):
 
     for old_file in old_files:
         copy_and_replace(old_file, target_directory)
+
+
