@@ -1,6 +1,6 @@
 import os
 import sys
-import helpers
+from utils import helpers
 
 # Load config function that attempts to load a user profile, but fallbacks to default if not found.
 
